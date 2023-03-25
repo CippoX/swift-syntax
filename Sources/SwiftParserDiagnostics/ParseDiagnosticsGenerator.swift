@@ -470,7 +470,7 @@ public class ParseDiagnosticsGenerator: SyntaxAnyVisitor {
         message: { _ in .joinConditionsUsingComma },
         moveFixIt: { ReplaceTokensFixIt(replaceTokens: $0, replacement: trailingComma) }
       )
-    }
+    } /* I think it should be diagnosed here */
     return .visitChildren
   }
 
