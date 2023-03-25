@@ -192,7 +192,7 @@ extension Parser {
       if keepGoing == nil, let andOperator = self.consumeIfContextualPunctuator("&&") {
         unexpectedBeforeKeepGoing = RawUnexpectedNodesSyntax([andOperator], arena: self.arena)
         keepGoing = missingToken(.comma)
-      } else if keepGoing == nil, let equalOperator = self.consumeIfContextualPunctuator("&&"),
+      } else if keepGoing == nil, let equalOperator = self.consumeIfContextualPunctuator("=="),
                 let falseKeyword = self.consume(if: .keyword(.false)){
         unexpectedBeforeKeepGoing = RawUnexpectedNodesSyntax([equalOperator, falseKeyword], arena: self.arena)
       } else {
