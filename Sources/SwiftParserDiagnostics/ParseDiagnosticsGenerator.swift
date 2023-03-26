@@ -922,6 +922,16 @@ public class ParseDiagnosticsGenerator: SyntaxAnyVisitor {
     }
     return .visitChildren
   }
+  
+  public override func visit(_ node: DeclModifierSyntax) -> SyntaxVisitorContinueKind {
+    if shouldSkip(node) {
+      return .skipChildren
+    }
+    if node.name.presence == .missing {
+      
+    }
+    return .visitChildren
+  }
 
   public override func visit(_ node: PrecedenceGroupAssociativitySyntax) -> SyntaxVisitorContinueKind {
     if shouldSkip(node) {

@@ -128,10 +128,11 @@ final class OperatorDeclTests: XCTestCase {
   func testOperatorDecl7() {
     assertParse(
       """
-      operator +*+++ 1️⃣{ }
+      operator +*+++ 2️⃣{ }
       """,
       diagnostics: [
         // TODO: Old parser expected error on line 1: operator must be declared as 'prefix', 'postfix', or 'infix'
+        DiagnosticSpec(message: "expected modifier in operator declaration"),
         DiagnosticSpec(message: "operator should not be declared with body")
       ]
     )
@@ -144,6 +145,7 @@ final class OperatorDeclTests: XCTestCase {
       """,
       diagnostics: [
         // TODO: Old parser expected error on line 1: operator must be declared as 'prefix', 'postfix', or 'infix'
+        DiagnosticSpec(message: "expected modifier in operator declaration"),
         DiagnosticSpec(message: "operator should not be declared with body")
       ]
     )

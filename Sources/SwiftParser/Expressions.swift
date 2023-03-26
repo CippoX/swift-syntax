@@ -152,6 +152,7 @@ extension Parser {
 
     var loopCondition = LoopProgressCondition()
     while loopCondition.evaluate(currentToken) {
+      print(currentToken)
       guard
         !lastElement.is(RawMissingExprSyntax.self),
         !(forDirective && self.currentToken.isAtStartOfLine)
@@ -184,6 +185,7 @@ extension Parser {
           forDirective: forDirective,
           pattern: pattern
         )
+        print(lastElement)
       }
     }
 
@@ -500,6 +502,9 @@ extension Parser {
         )
       )
     case nil:
+      print(flavor)
+      print(forDirective)
+      print(pattern)
       return self.parseUnaryExpression(flavor, forDirective: forDirective, pattern: pattern)
     }
   }
@@ -754,9 +759,12 @@ extension Parser {
         return leadingExpr
       }
 
+      print(currentToken)
       // Check for a .foo suffix.
       if self.at(.period) {
+        print("eskereee")
         leadingExpr = self.parseDottedExpressionSuffix(leadingExpr)
+        print(leadingExpr)
         continue
       }
 

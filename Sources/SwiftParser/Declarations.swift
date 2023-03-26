@@ -1888,6 +1888,14 @@ extension Parser {
     _ attrs: DeclAttributes,
     _ handle: RecoveryConsumptionHandle
   ) -> RawOperatorDeclSyntax {
+    var modifiers: RawModifierListSyntax?
+    if attrs.modifiers == nil {
+      // .prefix is used as placeholder to rapresent a missing DeclModifierSyntax in this context
+      let decl = RawDeclModifierSyntax(name: missingToken(.prefix), detail: nil, arena: arena.self)
+      modifiers = RawModifierListSyntax(RawModifierListSyntax(elements: [decl], arena: arena.self))
+    } else {
+      modifiers = attrs.modifiers
+    }
     let (unexpectedBeforeOperatorKeyword, operatorKeyword) = self.eat(handle)
     let unexpectedBeforeName: RawUnexpectedNodesSyntax?
     let name: RawTokenSyntax
@@ -1966,7 +1974,7 @@ extension Parser {
     }
     return RawOperatorDeclSyntax(
       attributes: attrs.attributes,
-      modifiers: attrs.modifiers,
+      modifiers: modifiers,
       unexpectedBeforeOperatorKeyword,
       operatorKeyword: operatorKeyword,
       unexpectedBeforeName,
