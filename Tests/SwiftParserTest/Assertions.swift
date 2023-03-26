@@ -556,6 +556,8 @@ func assertParse<S: SyntaxProtocol>(
   markerLocations["START"] = 0
 
   let tree: S = parse(source)
+  
+  print(tree.recursiveDescription)
 
   // Round-trip
   assertStringsEqualWithDiff(

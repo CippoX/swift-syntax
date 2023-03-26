@@ -1342,7 +1342,23 @@ extension Parser {
     _ attrs: DeclAttributes,
     _ handle: RecoveryConsumptionHandle
   ) -> RawFunctionDeclSyntax {
-    let (unexpectedBeforeFuncKeyword, funcKeyword) = self.eat(handle)
+    let unexpectedBeforeFuncKeyword: RawUnexpectedNodesSyntax?
+    var funcKeyword = self.consume(if: .keyword(.func))
+    if funcKeyword == nil {
+      var unexpected = [RawSyntax]()
+      while self.currentToken.rawTokenKind != .identifier {
+        var signature = self.parseFunctionSignature()
+        if signature.unexpectedBeforeInput != nil {
+          funcKeyword = self.missingToken(.func)
+        } else {
+          unexpectedBeforeFuncKeyword = nil
+        }
+      }
+      
+
+    } else {
+      unexpectedBeforeFuncKeyword = nil
+    }
     let unexpectedBeforeIdentifier: RawUnexpectedNodesSyntax?
     let identifier: RawTokenSyntax
     if self.at(anyIn: Operator.self) != nil || self.at(.exclamationMark, .prefixAmpersand) || self.atRegexLiteralThatCouldBeAnOperator() {
@@ -1377,7 +1393,7 @@ extension Parser {
       attributes: attrs.attributes,
       modifiers: attrs.modifiers,
       unexpectedBeforeFuncKeyword,
-      funcKeyword: funcKeyword,
+      funcKeyword: funcKeyword ?? identifier,
       unexpectedBeforeIdentifier,
       identifier: identifier,
       genericParameterClause: genericParams,
