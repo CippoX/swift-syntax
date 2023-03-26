@@ -182,6 +182,8 @@ extension Parser {
     let inheritance: RawTypeInheritanceClauseSyntax?
     if self.at(.colon) {
       inheritance = self.parseInheritance()
+    } else if self.peek().rawTokenKind != .leftBrace {
+      inheritance = self.parseInheritance(true)
     } else {
       inheritance = nil
     }
@@ -212,8 +214,17 @@ extension Parser {
 
   /// Parse an inheritance clause.
   @_spi(RawSyntax)
-  public mutating func parseInheritance() -> RawTypeInheritanceClauseSyntax {
-    let (unexpectedBeforeColon, colon) = self.expect(.colon)
+  public mutating func parseInheritance(_ missinColon: Bool = false) -> RawTypeInheritanceClauseSyntax {
+    var colon: RawTokenSyntax
+    var unexpectedBeforeColon: RawUnexpectedNodesSyntax?
+    if missinColon == true {
+      colon = Token(missing: .colon, arena: self.arena)
+      unexpectedBeforeColon = nil
+    } else {
+      let tupleResult = self.expect(.colon)
+      unexpectedBeforeColon = tupleResult.0
+      colon = tupleResult.1
+    }
     var elements = [RawInheritedTypeSyntax]()
     do {
       var keepGoing: RawTokenSyntax? = nil

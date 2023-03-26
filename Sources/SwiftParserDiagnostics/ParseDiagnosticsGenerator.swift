@@ -1149,6 +1149,21 @@ public class ParseDiagnosticsGenerator: SyntaxAnyVisitor {
     return handleEffectSpecifiers(node)
   }
 
+  public override func visit(_ node: TypeInheritanceClauseSyntax) -> SyntaxVisitorContinueKind {
+    if shouldSkip(node) {
+      return .skipChildren
+    }
+    if node.colon.isMissingAllTokens == true {
+      let colon = node.colon
+      addDiagnostic(
+        colon,
+        .missingColonInInheritanceClause,
+        handledNodes: [colon.id]
+      )
+    }
+    return .visitChildren
+  }
+  
   public override func visit(_ node: TypeInitializerClauseSyntax) -> SyntaxVisitorContinueKind {
     if shouldSkip(node) {
       return .skipChildren

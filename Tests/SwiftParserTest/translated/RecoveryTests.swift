@@ -1519,7 +1519,7 @@ final class RecoveryTests: XCTestCase {
       """,
       diagnostics: [
         // TODO: Old parser expected error on line 1: expected ':' to begin inheritance clause, Fix-It replacements: 30 - 31 = ': ', 34 - 35 = ''
-        DiagnosticSpec(message: "unexpected code '(Int)' in class")
+        DiagnosticSpec(message: "expected ':' to begin inheritance clause")
       ]
     )
   }
@@ -1531,7 +1531,7 @@ final class RecoveryTests: XCTestCase {
       """,
       diagnostics: [
         // TODO: Old parser expected error on line 1: expected ':' to begin inheritance clause, Fix-It replacements: 30 - 31 = ': ', 41 - 42 = ''
-        DiagnosticSpec(message: "unexpected code '(Base2<Int>)' in class")
+        DiagnosticSpec(message: "expected ':' to begin inheritance clause")
       ]
     )
   }
@@ -1555,7 +1555,7 @@ final class RecoveryTests: XCTestCase {
       """,
       diagnostics: [
         // TODO: Old parser expected error on line 1: expected ':' to begin inheritance clause, Fix-It replacements: 30 - 31 = ': ', 51 - 52 = ''
-        DiagnosticSpec(message: "unexpected code '(SubModule.Base2<Int>)' in class")
+        DiagnosticSpec(message: "expected ':' to begin inheritance clause")
       ]
     )
   }
@@ -1567,7 +1567,7 @@ final class RecoveryTests: XCTestCase {
       """,
       diagnostics: [
         // TODO: Old parser expected error on line 1: expected ':' to begin inheritance clause, Fix-It replacements: 33 - 34 = ': ', 54 - 55 = ''
-        DiagnosticSpec(message: "unexpected code '(SubModule.Base2<Int>) where T:AnyObject' in class")
+        DiagnosticSpec(message: "expected ':' to begin inheritance clause")
       ]
     )
   }

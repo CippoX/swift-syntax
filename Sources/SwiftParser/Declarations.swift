@@ -979,10 +979,13 @@ extension Parser {
     // Parse optional inheritance clause.
     let inheritance: RawTypeInheritanceClauseSyntax?
     if self.at(.colon) {
+      print("AAAAAAA")
       inheritance = self.parseInheritance()
     } else {
       inheritance = nil
     }
+    
+    print(inheritance?.description)
 
     // Parse default type, if any.
     let defaultType: RawTypeInitializerClauseSyntax?

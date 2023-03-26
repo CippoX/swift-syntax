@@ -164,6 +164,9 @@ extension DiagnosticMessage where Self == StaticParserError {
   public static var missingColonInTernaryExpr: Self {
     .init("expected ':' after '? ...' in ternary expression")
   }
+  public static var missingColonInInheritanceClause: Self {
+    .init("expected ':' to begin inheritance clause")
+  }
   public static var missingConformanceRequirement: Self {
     .init("expected ':' or '==' to indicate a conformance or same-type requirement")
   }
