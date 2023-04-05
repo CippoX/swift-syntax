@@ -102,6 +102,9 @@ public struct Parser {
 
   /// When this nesting level is exceeded, the parser should stop parsing.
   public let maximumNestingLevel: Int
+  
+  /// An object that stores the prevoius syntax tree and the edits
+  public var incrementalParsingCache: IncrementalParseTransition? = nil
 
   /// A default maximum nesting level that is used if the client didn't
   /// explicitly specify one. Debug builds of the parser comume a lot more stack
@@ -126,6 +129,25 @@ public struct Parser {
       return arena.internSourceBuffer(buffer)
     }
 
+    self.lexemes = Lexer.tokenize(interned)
+    self.currentToken = self.lexemes.advance()
+  }
+  
+  /// init overload for incremental parsing
+  public init(_ input: String, maximumNestingLevel: Int? = nil, incrementalParsingCache: IncrementalParseTransition?) {
+    self.maximumNestingLevel = maximumNestingLevel ?? Self.defaultMaximumNestingLevel
+    self.incrementalParsingCache = incrementalParsingCache
+    
+    self.arena = ParsingSyntaxArena(
+      parseTriviaFunction: TriviaParser.parseTrivia(_:position:)
+    )
+    
+    var input = input
+    input.makeContiguousUTF8()
+    let interned = input.withUTF8 { [arena] buffer in
+      return arena.internSourceBuffer(buffer)
+    }
+    
     self.lexemes = Lexer.tokenize(interned)
     self.currentToken = self.lexemes.advance()
   }
@@ -597,3 +619,26 @@ extension Parser {
     )
   }
 }
+
+@_spi(RawSyntax)
+extension Parser {
+  public mutating func tryLoadingCurrentNodeFromCache(kind: SyntaxKind) -> Syntax? {
+    // If a cache is found, we can incrementaly re-parse
+    if let incrementalParsingCache = self.incrementalParsingCache {
+      var lookup = IncrementalParseLookup(transition: incrementalParsingCache)
+      let offset = self.lexemes.getOffsetToStart(self.currentToken)
+      
+      if let reusedNode = lookup.lookUp(offset, kind: kind), let newPosition = lexemes.skip(from: self.currentToken, by: reusedNode.byteSize) {
+        self.currentToken = newPosition
+        return reusedNode
+      }
+    }
+    return nil
+  }
+}
+
+/*extension Parser {
+  public func lookupNode() -> Syntax? {
+   
+  }
+}*/

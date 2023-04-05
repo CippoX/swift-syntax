@@ -30,7 +30,28 @@ extension Lexer {
     /// The memory footpring of not freeing past lexer states is neglible. It's
     /// usually less than 0.1% of the memory allocated by the syntax arena.
     var lexerStateAllocator = BumpPtrAllocator(slabSize: 256)
-
+    
+    public func getOffsetToStart(_ token: Lexer.Lexeme) -> Int {
+      return self.sourceBufferStart.distance(to: token.cursor)
+    }
+    
+    public mutating func skip(from currentToken: Lexer.Lexeme, by offset: Int) -> Lexer.Lexeme? {
+      guard offset > 0 else { return currentToken }
+      
+      var token = currentToken
+      var currentPosition = token.byteLength
+      
+      while currentPosition <= offset {
+        token = self.advance()
+        currentPosition += token.byteLength
+        if currentPosition == offset{
+          break
+        }
+      }
+      token = self.advance()
+      return token
+    }
+    
     fileprivate init(sourceBufferStart: Lexer.Cursor, cursor: Lexer.Cursor) {
       self.sourceBufferStart = sourceBufferStart
       self.cursor = cursor

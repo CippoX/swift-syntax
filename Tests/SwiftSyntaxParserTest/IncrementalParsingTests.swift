@@ -14,20 +14,56 @@ import XCTest
 import SwiftSyntax
 import SwiftSyntaxParser
 
+// struct A { func f() {}} let a = 3
 public class IncrementalParsingTests: XCTestCase {
 
   public func testIncrementalInvalid() {
-    let original = "struct A { func f() {"
-    let step: (String, (Int, Int, String)) =
-      ("struct AA { func f() {", (8, 0, "A"))
 
+    let original = "..."
+    let step: (String, (Int, Int, String)) = ("...", (8, 0, "A"))
+    
     var tree = try! SyntaxParser.parse(source: original)
+    measure {
+      tree = try! SyntaxParser.parse(source: original)
+    }
     let sourceEdit = SourceEdit(range: ByteSourceRange(offset: step.1.0, length: step.1.1), replacementLength: step.1.2.utf8.count)
     let lookup = IncrementalParseTransition(previousTree: tree, edits: ConcurrentEdits(sourceEdit))
-    tree = try! SyntaxParser.parse(source: step.0, parseTransition: lookup)
+    measure {
+      tree = try! SyntaxParser.parse(source: step.0, parseTransition: lookup)
+    }
     XCTAssertEqual("\(tree)", step.0)
   }
 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   public func testReusedNode() throws {
     throw XCTSkip("Swift parser does not handle node reuse yet")
 

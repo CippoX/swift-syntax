@@ -21,7 +21,7 @@ extension Parser {
     source: String, 
     parseTransition: IncrementalParseTransition? = nil
   ) -> SourceFileSyntax {
-    var parser = Parser(source)
+    var parser = Parser(source, incrementalParsingCache: parseTransition)
     return SourceFileSyntax.parse(from: &parser)
   }
   

@@ -821,6 +821,9 @@ extension Parser {
   /// indented to close this code block or a surrounding context. See `expectRightBrace`.
   @_spi(RawSyntax)
   public mutating func parseMemberDeclList(introducer: RawTokenSyntax? = nil) -> RawMemberDeclBlockSyntax {
+    if let reusedNode = self.tryLoadingCurrentNodeFromCache(kind: .memberDeclBlock) {
+      return RawMemberDeclBlockSyntax(reusedNode.raw)!
+    }
     var elements = [RawMemberDeclListItemSyntax]()
     let (unexpectedBeforeLBrace, lbrace) = self.expect(.leftBrace)
     do {
